@@ -666,6 +666,7 @@ nav .on{color:var(--ac) !important;transform:translateY(-1px)}
   <button data-a="tab" data-v="add">➕<small id="nav-add">Add</small></button>
   <button data-a="tab" data-v="items">🔎<small id="nav-items">Items</small></button>
   <button data-a="tab" data-v="hist">🧾<small id="nav-hist">History</small></button>
+  <button data-a="tab" data-v="stores">🏪<small id="nav-stores">Stores</small></button>
 </nav>
 <div id="ts"></div>
 <script>
@@ -692,7 +693,10 @@ const I18N_TOC={
     'home.byCat','home.byItem','home.recent','home.total','home.noExp',
     'add.expense','add.income','add.save','add.smartBadge','add.smartHint','add.speak','add.read','add.cam','add.gal','add.clear','add.wipe',
     'items.searchPh','items.month','items.all','items.bySpend','items.guessHint',
-    'hist.searchPh','hist.noMatch'
+    'hist.searchPh','hist.noMatch',
+    'nav.stores','stores.title','stores.empty','stores.purchases','stores.lastSeen','stores.delete',
+    'tax.title','tax.month','tax.fy','tax.year','tax.custom','tax.totalTax','tax.spend','tax.bills','tax.from','tax.to',
+    'add.storeNote','add.storeNone'
   ],
   strings:{
     en:{
@@ -702,7 +706,8 @@ const I18N_TOC={
       'add.expense':'Expense','add.income':'Income','add.save':'Save Entry ✓','add.smartBadge':'✦ Smart Parser · Hybrid Voice · GST / Handwritten OCR',
       'add.smartHint':'Type, speak or scan GST invoices, thermal slips & handwritten bills in English, हिन्दी or Hinglish.','add.speak':'🎤 Speak','add.read':'Read ✨','add.cam':'📷 Camera','add.gal':'🖼 Gallery','add.clear':'🧹 Clear form','add.wipe':'🗑 Delete all saved…',
       'items.searchPh':'🔍 Type item or dish (e.g. kachori, partha, sbji, aata, aam)…','items.month':'This month','items.all':'All time','items.bySpend':'Items by spending','items.guessHint':'Smart matches',
-      'hist.searchPh':'🔍 Search items, brands, GSTIN, stores, categories…','hist.noMatch':'No matching entries'
+      'hist.searchPh':'🔍 Search items, brands, GSTIN, stores, categories…','hist.noMatch':'No matching entries',
+      'nav.stores':'Stores','stores.title':'Saved Stores','stores.empty':'No stores yet — scan a bill that shows a store name, GSTIN or PAN and it appears here automatically.','stores.purchases':'purchases','stores.lastSeen':'Last seen','stores.delete':'Delete this store? Saved purchases stay.','tax.title':'Indirect Tax Paid','tax.month':'This month','tax.fy':'Financial yr','tax.year':'Calendar yr','tax.custom':'Custom','tax.totalTax':'Tax paid','tax.spend':'Spending','tax.bills':'Bills','tax.from':'From','tax.to':'To','add.storeNote':'These details are folded into each item’s description and the store is saved under the Stores tab.','add.storeNone':'No store identified on this bill — you can still save the items.'
     },
     hi:{
       'nav.home':'होम','nav.add':'जोड़ें','nav.items':'सामान','nav.hist':'इतिहास',
@@ -711,7 +716,8 @@ const I18N_TOC={
       'add.expense':'खर्च','add.income':'आय','add.save':'सहेजें ✓','add.smartBadge':'✦ स्मार्ट पार्सर · वॉइस · GST और हस्तलिखित बिल OCR',
       'add.smartHint':'अंग्रेज़ी, हिन्दी या हिंग्लिश में लिखें, बोलें या GST/हस्तलिखित बिल स्कैन करें।','add.speak':'🎤 बोलें','add.read':'पढ़ें ✨','add.cam':'📷 कैमरा','add.gal':'🖼 गैलरी','add.clear':'🧹 साफ़ करें','add.wipe':'🗑 सब हटाएँ…',
       'items.searchPh':'🔍 सामान या व्यंजन खोजें (कचौरी, पराठा, सब्ज़ी, आटा)…','items.month':'इस महीने','items.all':'अब तक','items.bySpend':'खर्च के अनुसार सामान','items.guessHint':'सुझाए गए सामान',
-      'hist.searchPh':'🔍 सामान, ब्रांड, GSTIN, दुकान या श्रेणी खोजें…','hist.noMatch':'कोई प्रविष्टि नहीं मिली'
+      'hist.searchPh':'🔍 सामान, ब्रांड, GSTIN, दुकान या श्रेणी खोजें…','hist.noMatch':'कोई प्रविष्टि नहीं मिली',
+      'nav.stores':'दुकानें','stores.title':'सहेजी गई दुकानें','stores.empty':'अभी कोई दुकान नहीं — ऐसा बिल स्कैन करें जिसमें दुकान का नाम, GSTIN या PAN हो, वह यहाँ अपने आप जुड़ जाएगी।','stores.purchases':'खरीदारी','stores.lastSeen':'अंतिम बार','stores.delete':'यह दुकान हटाएँ? सहेजी खरीदारी सुरक्षित रहेगी।','tax.title':'अप्रत्यक्ष कर (GST)','tax.month':'इस महीने','tax.fy':'वित्त वर्ष','tax.year':'कैलेंडर वर्ष','tax.custom':'कस्टम','tax.totalTax':'कर भुगतान','tax.spend':'खर्च','tax.bills':'बिल','tax.from':'से','tax.to':'तक','add.storeNote':'यह जानकारी हर सामान के विवरण में जुड़ती है और दुकान स्टोर्स टैब में सहेजी जाती है।','add.storeNone':'इस बिल पर कोई दुकान पहचानी नहीं गई — फिर भी सामान सहेजा जा सकता है।'
     }
   }
 };
@@ -740,7 +746,7 @@ const C=[
 ['oi','Other income','अन्य आय','➕','in','']];
 const CAT=Object.fromEntries(C.map(([id,en,hi,ic,ty,k])=>[id,{id,en,hi,ic,ty,k:k.split(' ').filter(Boolean)}]));
 const cc=x=>CAT[x.cat]||CAT.oth;
-const S={tx:[],m:'',tab:'home',ty:'ex',q:'',lang:'en',hi:false,pick:0,cd:'',pv:'c',iq:'',iqs:'',ir:'m',th:''};
+const S={tx:[],stores:[],m:'',tab:'home',ty:'ex',q:'',lang:'en',hi:false,pick:0,cd:'',pv:'c',iq:'',iqs:'',ir:'m',th:'',taxP:'m',tf:'',tt:''};
 let R=null,busyMsg='',busyPct=0,ocrScanning=false,ocrAbort=false,SM=null,D=null,DL={save:o=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([o.data]));a.download=o.filename;a.click();return Promise.resolve()}},coll=null,listening=false;
 const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
@@ -753,16 +759,75 @@ function localParse(t){const items=[];for(const g of dn(t).split(/[,\n;]+|\s+(?:
 let toastTimer=null;
 const toast=m=>{const t=$('#ts');t.textContent=m;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2700)};
 const cache=()=>{try{localStorage.setItem('km_tx',JSON.stringify(S.tx))}catch(e){}};
+const cacheStores=()=>{try{localStorage.setItem('km_stores',JSON.stringify(S.stores))}catch(e){}};
+
+/* ============================================================================
+   STORES REGISTRY — persistent, de-duplicated store records
+   Matched by GSTIN → PAN → normalised name; contact details on a newer
+   receipt are merged into the saved record when they change.
+   ============================================================================ */
+const normStoreName=n=>String(n||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+function upsertStore(m){
+  m={name:String(m.name||'').trim(),gstin:String(m.gstin||'').toUpperCase().trim(),pan:String(m.pan||'').toUpperCase().trim(),addr:String(m.addr||'').trim(),cnt:String(m.cnt||'').trim()};
+  if(!m.name&&!m.gstin&&!m.pan)return null;
+  let st=null;
+  if(m.gstin)st=S.stores.find(s=>s.gstin&&s.gstin===m.gstin)||null;
+  if(!st&&m.pan)st=S.stores.find(s=>s.pan&&s.pan===m.pan)||null;
+  if(!st&&m.name){const nk=normStoreName(m.name);if(nk.length>=4){st=S.stores.find(s=>normStoreName(s.name)===nk)||null;
+    if(!st){const cands=S.stores.filter(s=>{const sk=normStoreName(s.name);return sk.length>=6&&Math.abs(sk.length-nk.length)<=3&&lev(sk,nk)<=2});
+      if(cands.length===1)st=cands[0]}}}
+  if(!st){st={id:uid(),name:m.name,gstin:m.gstin,pan:m.pan,addr:m.addr,cnt:m.cnt,p:0,last:today(),ts:Date.now()};S.stores.push(st);cacheStores();return st}
+  let ch=false;
+  if(m.gstin&&!st.gstin){st.gstin=m.gstin;ch=true}
+  if(m.pan&&!st.pan){st.pan=m.pan;ch=true}
+  if(m.name&&!st.name){st.name=m.name;ch=true}
+  else if(m.name&&normStoreName(m.name)!==normStoreName(st.name)&&m.name.length>=st.name.length){st.name=m.name;ch=true}
+  if(m.addr){const a=normStoreName(m.addr),b=normStoreName(st.addr);
+    if(!b){st.addr=m.addr;ch=true}else if(a!==b&&lev(a,b)>3){st.addr=m.addr;ch=true}}
+  if(m.cnt){
+    const have=new Set(String(st.cnt||'').split(' · ').map(x=>x.trim()).filter(Boolean));
+    const fresh=String(m.cnt).split(' · ').map(x=>x.trim()).filter(Boolean).filter(x=>!have.has(x));
+    if(fresh.length){st.cnt=[...have,...fresh].join(' · ');ch=true}
+  }
+  if(ch){st.ts=Date.now();cacheStores()}
+  return st;
+}
+
+const storesView=()=>{
+  const L=[...S.stores].sort((a,b)=>(b.ts||0)-(a.ts||0));
+  return `<div class="card card-anim"><div class="row" style="margin-bottom:4px"><b>${t('stores.title')}</b><span class="sp"></span><span class="badge-ai">${L.length} 🏪</span></div><small>Stores are matched from scanned bills by GSTIN / PAN / name. When a newer bill shows changed phone or email, the record updates automatically.</small></div>`+
+  (L.length?L.map((s,i)=>{const info=[s.addr,s.gstin?'GSTIN: '+s.gstin:'',s.pan?'PAN: '+s.pan:'',s.cnt?'☎ '+s.cnt:''].filter(Boolean).map(esc).join('<br>');return `<div class="card card-anim" style="--stagger:${Math.min(i,10)*40}ms"><div class="row"><span class="ic">🏪</span><div class="gr"><div style="font-weight:700">${esc(s.name||'—')}</div>${info?`<small>${info}</small>`:''}</div><button class="x" data-a="sdel" data-v="${s.id}" title="Delete store">🗑</button></div><div class="row" style="margin-top:6px"><small>${s.p||0} ${t('stores.purchases')} · ${t('stores.lastSeen')}: ${esc(s.last||'—')}</small></div></div>`}).join(''):`<div class="card"><p class="mu" style="margin:6px 0;text-align:center">${t('stores.empty')}</p></div>`);
+};
+
+/* ============================================================================
+   INDIRECT TAX TRACKER — total GST paid over a selectable period
+   ============================================================================ */
+function taxRange(){
+  if(S.taxP==='m')return[S.m+'-01',S.m+'-31'];
+  if(S.taxP==='y'){const y=S.m.slice(0,4);return[y+'-01-01',y+'-12-31']}
+  if(S.taxP==='f'){const[y,m]=S.m.split('-').map(Number),fy=m>=4?y:y-1;return[fy+'-04-01',(fy+1)+'-03-31']}
+  return[S.tf||'0000-01-01',S.tt||'9999-12-31'];
+}
+const taxView=()=>{
+  const[rf,rt]=taxRange(),L=S.tx.filter(x=>x.t==='ex'&&x.d>=rf&&x.d<=rt);
+  const tax=L.reduce((s,x)=>s+(x.tax||0),0),spend=L.reduce((s,x)=>s+x.amt,0);
+  const bills={};L.forEach(x=>{const k=x.bill||x.id,b=bills[k]=bills[k]||{d:x.d,n:0,amt:0,tax:0,note:x.note};b.n++;b.amt+=x.amt;b.tax+=x.tax||0});
+  const BL=Object.values(bills).filter(b=>b.tax>0).sort((a,b)=>b.d.localeCompare(a.d));
+  return `<div class="card card-anim"><div class="row" style="margin-bottom:6px"><b>🧾 ${t('tax.title')}</b><span class="sp"></span><span class="badge-ai">${esc(rf)} → ${esc(rt)}</span></div>
+  <div class="seg" style="margin-bottom:8px"><div class="seg-pill"></div>${[['m','tax.month'],['f','tax.fy'],['y','tax.year'],['c','tax.custom']].map(([v,k])=>`<button data-a="txp" data-v="${v}" class="${S.taxP===v?'on':''}">${t(k)}</button>`).join('')}</div>
+  ${S.taxP==='c'?`<div class="row"><input id="tf" type="date" value="${esc(S.tf)}" title="${t('tax.from')}"><input id="tt" type="date" value="${esc(S.tt)}" title="${t('tax.to')}"></div>`:''}
+  <div class="g3"><div class="card"><span class="kpi-tag">${t('tax.totalTax')}</span><b class="kpi-val num" style="color:var(--ex)">${rs(tax)}</b></div><div class="card"><span class="kpi-tag">${t('tax.spend')}</span><b class="kpi-val num">${rs(spend)}</b></div><div class="card"><span class="kpi-tag">${t('tax.bills')}</span><b class="kpi-val num">${Object.keys(bills).length}</b></div></div>
+  ${BL.length?`<small style="display:block;margin:4px 0 2px">Bills with tax in this period</small>`+BL.slice(0,30).map((b,i)=>`<div class="li" style="--idx:${i}"><span class="ic">🧾</span><div class="gr"><div style="font-weight:600">${esc(b.note||'Bill')}${b.n>1?` <span class="sub-pill">${b.n} items</span>`:''}</div><small>${esc(b.d)} · ${rs(b.amt)}</small></div><b class="num ex">${rs(b.tax)}</b></div>`).join(''):`<p class="mu" style="margin:6px 0;text-align:center">No tax recorded in this period</p>`}</div>`;
+};
 function applyTheme(th){S.th=th;if(th)document.documentElement.dataset.theme=th;else delete document.documentElement.dataset.theme;try{localStorage.setItem('km_th',th)}catch(e){}}
-try{S.tx=JSON.parse(localStorage.getItem('km_tx')||'[]');S.lang=localStorage.getItem('km_lang')||(localStorage.getItem('km_hi')==='1'?'hi':'en');S.hi=S.lang==='hi';applyTheme(localStorage.getItem('km_th')||'')}catch(e){}
+try{S.tx=JSON.parse(localStorage.getItem('km_tx')||'[]');S.stores=JSON.parse(localStorage.getItem('km_stores')||'[]');S.lang=localStorage.getItem('km_lang')||(localStorage.getItem('km_hi')==='1'?'hi':'en');S.hi=S.lang==='hi';applyTheme(localStorage.getItem('km_th')||'')}catch(e){}
 function put(t){if(t.bill&&S.img&&t.bill===S.bid){t.img=1;idbPut(t.bill,S.img)}S.tx=S.tx.filter(x=>x.id!==t.id).concat(t);cache()}
 function rm(id){S.tx=S.tx.filter(x=>x.id!==id);cache();if(coll)coll.doc(id).delete().catch(()=>{})}
 
 const mk=o=>({
   id:uid(),t:o.type,amt:Math.round((+o.amount||0)*100),cat:o.cat||'oth',
-  note:o.note||'',br:o.brand||'',qt:o.qty||'',
+  note:o.note||'',qt:o.qty||'',
   it:o.item||itemKey(o.note),ds:o.desc||'',
-  mer:o.mer||'',gst:o.gstin||'',pan:o.pan||'',adr:o.addr||'',cnt:o.contact||'',
   tax:o.tax?Math.round((+o.tax||0)*100):0,btot:o.btot?Math.round((+o.btot||0)*100):0,
   d:o.date||today(),pay:o.pay||'',bill:o.bill||(S.img?(S.bid=S.bid||uid()):''),
   src:o.src||'manual',ts:Date.now()
@@ -771,17 +836,18 @@ const mk=o=>({
 const mtx=()=>S.tx.filter(x=>x.d.startsWith(S.m)).sort((a,b)=>b.d.localeCompare(a.d)||b.ts-a.ts);
 const sum=(L,t)=>L.filter(x=>x.t===t).reduce((s,x)=>s+x.amt,0);
 
+/* Store-level details (name, GSTIN/PAN, address, contact, brand) live inside the
+   item description (ds) and in the Stores tab — never as separate purchase fields. */
+const descOf=x=>x.ds||[x.br?`🏷️ ${x.br}`:'',x.mer||'',x.gst?`GSTIN ${x.gst}`:'',x.pan?`PAN ${x.pan}`:'',x.adr||'',x.cnt||''].filter(Boolean).join(' · ');
 const row=(x,idx=0)=>{
   const c=cc(x),sub=subCatOf(itemOf(x));
   const meta=[
-    x.br?`🏷️ ${esc(x.br)}`:'',
     x.qt?`📦 ${esc(x.qt)}`:'',
-    x.ds?esc(x.ds):'',
-    x.mer?esc(x.mer):'',
+    descOf(x),
     lab(c),
     x.pay?esc(x.pay):''
   ].filter(Boolean).join(' · ');
-  const taxTag=x.gst?` · GSTIN: ${esc(x.gst)}`:(x.pan?` · PAN: ${esc(x.pan)}`:'');
+  const taxTag=x.tax?` · 🧾 ${rs(x.tax)} tax`:'';
   return `<div class="li" style="--idx:${Math.min(idx,14)}"><span class="ic">${c.ic}</span><div class="gr"><div style="font-weight:600">${esc(x.note||lab(c))}${sub?`<span class="sub-pill">${esc(sub)}</span>`:''}</div><small>${meta}${taxTag}</small></div>${x.img?`<button class='x' data-a='vi' data-v='${x.bill}' title='View receipt'>🧾</button>`:''}<b class="${x.t} num">${x.t==='in'?'+':'−'}${rs(x.amt)}</b><button class="x" data-a="ed" data-v="${x.id}" title="Edit">✏️</button></div>`;
 };
 
@@ -923,7 +989,7 @@ function hl(){
   let h=tray,idx=0;for(const d of Object.keys(byD)){const dayEx=sum(byD[d],'ex');h+=`<h4><span>${new Date(d+'T00:00').toLocaleDateString(S.lang==='hi'?'hi-IN':'en-IN',{weekday:'short',day:'numeric',month:'short'})}</span>${dayEx?`<span class="num">−${rs(dayEx)}</span>`:''}</h4><div class="card" style="padding:6px 15px">${byD[d].map(x=>row(x,idx++)).join('')}</div>`}
   return h;
 }
-const hist=()=>`<div class="row"><input id="q" autocomplete="off" placeholder="${t('hist.searchPh')}" value="${esc(S.q)}"><button data-a='ex' title="Export CSV">⬇ CSV</button><button data-a='bk' title="Backup JSON">💾</button><label class='btn' title="Restore JSON">📂<input type='file' accept='.json' id='rs' hidden></label></div><div id="hl">${hl()}</div>`;
+const hist=()=>`${taxView()}<div class="row"><input id="q" autocomplete="off" placeholder="${t('hist.searchPh')}" value="${esc(S.q)}"><button data-a='ex' title="Export CSV">⬇ CSV</button><button data-a='bk' title="Backup JSON">💾</button><label class='btn' title="Restore JSON">📂<input type='file' accept='.json' id='rs' hidden></label></div><div id="hl">${hl()}</div>`;
 const add=()=>`<div class="card card-anim" style="--stagger:20ms"><div class="seg" style="margin-bottom:8px"><div class="seg-pill"></div><button data-a="ty" data-v="ex" class="${S.ty==='ex'?'on':''}">${t('add.expense')}</button><button data-a="ty" data-v="in" class="${S.ty==='in'?'on':''}">${t('add.income')}</button></div>
 <div class="amt-wrap"><input id="am" type="number" inputmode="decimal" placeholder="0.00"></div><input id="nt" placeholder="Item, dish or shop (kachori, doodh, petrol, salary…)"><div id="nt-tray"></div><select id="ct">${opts(S.ty==='in'?'oi':'oth',S.ty)}</select>
 <div class="row"><input id="dt" type="date" value="${today()}"><select id="py"><option>Cash</option><option>UPI</option><option>Card</option><option>Bank</option></select></div><button class="btn p" data-a="sv" style="width:100%;margin-top:6px;padding:12px">${t('add.save')}</button></div>
@@ -944,14 +1010,9 @@ function rv(){
   const payable=R.total>0?R.total:itemSum;
   e.innerHTML=`<div class="card card-anim">
     <div class="row" style="margin-bottom:6px"><b>Review Extracted Bill</b><span class="sp"></span><span class="badge-ai">${R.items.length} item${R.items.length===1?'':'s'}</span></div>
-    <small>All fields below are optional — missing fields are skipped automatically</small>
-    <input data-m="merchant" placeholder="Store / Seller Name (optional)" value="${esc(R.merchant||'')}">
-    <div class="row">
-      <input data-m="gstin" placeholder="GSTIN (optional)" value="${esc(R.gstin||'')}">
-      <input data-m="pan" placeholder="PAN (optional)" value="${esc(R.pan||'')}">
-    </div>
-    <input data-m="address" placeholder="Store Address (optional)" value="${esc(R.address||'')}">
-    <input data-m="contact" placeholder="Store Phone / Email (optional)" value="${esc(R.contact||'')}">
+    <small>All fields are optional — unclear or missing information is skipped, never guessed</small>
+    ${(()=>{const st=[R.merchant?`🏪 ${esc(R.merchant)}`:'',R.gstin?`GSTIN ${esc(R.gstin)}`:'',R.pan?`PAN ${esc(R.pan)}`:'',R.address?esc(R.address):'',R.contact?esc(R.contact):''].filter(Boolean).join(' · ');
+      return st?`<div style="padding:9px 11px;margin:6px 0;border:1px dashed rgba(var(--brand-rgb),0.42);border-radius:12px;background:rgba(var(--brand-rgb),0.06);font-size:12.5px;line-height:1.55">${st}<br><small>${t('add.storeNote')}</small></div>`:(R.src==='scan'?`<div style="padding:8px 11px;margin:6px 0;border:1px dashed var(--bd);border-radius:12px;font-size:12.5px" class="mu">⚠️ ${t('add.storeNone')}</div>`:'')})()}
     <div style="margin:8px 0 4px;font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em">Line Items</div>
     ${R.items.map((i,n)=>`<div style="padding:8px;margin:6px 0;border:1px solid var(--bd);border-radius:14px;background:rgba(128,136,158,0.04)">
       <div class="ri">
@@ -997,22 +1058,27 @@ function saveR(){
   }
   if(!L.length)return toast('Enter at least one item or total amount');
   learn();
-  L.forEach(i=>put(mk({
+  /* Match (or create) the store by GSTIN / PAN and reuse its saved details */
+  const st=upsertStore({name:R.merchant||'',gstin:R.gstin||'',pan:R.pan||'',addr:R.address||'',cnt:R.contact||''});
+  const storeDesc=[st&&st.name,st&&st.addr,st&&st.gstin?'GSTIN: '+st.gstin:'',st&&st.pan?'PAN: '+st.pan:'',st&&st.cnt||''].filter(Boolean).join(' · ');
+  L.forEach((i,k)=>put(mk({
     type:i.type||'ex',amount:+i.amount,cat:i.cat||'oth',
-    note:i.name||'Item',brand:i.brand||'',qty:i.qty||'',desc:i.desc||'',
-    mer:R.merchant||'',gstin:R.gstin||'',pan:R.pan||'',addr:R.address||'',contact:R.contact||'',
-    tax:+R.tax||0,btot:+R.total||0,date:d,bill:b,pay:R.pay||'',src:R.src||'scan'
+    note:i.name||'Item',qty:i.qty||'',
+    desc:[i.brand,storeDesc].filter(Boolean).join(' · '),
+    tax:k===0?(+R.tax||0):0,btot:k===0?(+R.total||0):0,
+    date:d,bill:b,pay:R.pay||'',src:R.src||'scan'
   })));
+  if(st){st.p=(st.p||0)+1;st.last=d;cacheStores()}
   R=null;S.tab='home';S.m=d.slice(0,7);render();S.img=null;S.bid=null;
-  toast('Saved '+L.length+' ✓');
+  toast('Saved '+L.length+' ✓'+(st&&st.name?' · 🏪 '+st.name:''));
 }
 
 async function exportCsv(){
   const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-  const csv='Date,Type,Amount,Quantity,Brand,Item,Category,SubCategory,Store,GSTIN,PAN,Address,Contact,BillTax,BillTotal,Payment\n'+
+  const csv='Date,Type,Amount,Quantity,Item,Description,Category,SubCategory,BillTax,BillTotal,Payment\n'+
     mtx().map(x=>[
-      x.d,x.t==='in'?'Income':'Expense',x.amt/100,x.qt||'',x.br||'',x.note,
-      cc(x).en,subCatOf(itemOf(x)),x.mer||'',x.gst||'',x.pan||'',x.adr||'',x.cnt||'',
+      x.d,x.t==='in'?'Income':'Expense',x.amt/100,x.qt||'',x.note,descOf(x),
+      cc(x).en,subCatOf(itemOf(x)),
       x.tax?(x.tax/100):'',x.btot?(x.btot/100):'',x.pay||''
     ].map(q).join(',')).join('\n');
   try{await DL.save({filename:'kharcha-'+S.m+'.csv',data:csv})}catch(e){toast('Export not available here')}
@@ -1572,6 +1638,7 @@ function extractStoreMeta(fullTx,sellerTx){
     if(cl.length<3||HEADER_NOISE.test(cl))continue;
     if(/\b(?:road|rd|street|square|camp|nagar|colony|sector|phase|floor|bldg|building|plaza|dist|pin)\b/i.test(cl)&&/\d{5,6}/.test(cl))continue;
     if(/^[+\d\s\-()@.:]+$/.test(cl))continue;
+    if(/\d\s*(?:\/-|\/|\+)\s*$/.test(cl)||/₹\s*\d/.test(cl)||/(?:\/-|\/)\s*\d/.test(cl))continue;
     merchant=/^m\/s\.?\s/i.test(cl)?cl:fixMer(cl.match(/[A-Za-z0-9&.'-]+/g)||[cl]);
     break;
   }
@@ -1611,6 +1678,7 @@ function findTotals(tx,sum){
     if(/(?:total\s*tax(?:\s*amount)?|tax\s*amount)\b/i.test(l)){const x=last(l);if(x)taxList.push(x)}
     else if(/^(?:igst|cgst|sgst|gst)\s*[:\-]\s*(?:₹|rs\.?)?\s*\d/i.test(l.trim())){const x=last(l);if(x)taxList.push(x)}
     else if(/\b(?:igst|cgst|sgst)\s+(?:at|@)\s*\d+%/i.test(l)){const x=last(l);if(!isNaN(x)){igstSum+=x;hasIgstBreakdown=true}}
+    else if(/\b(?:output\s+)?(?:igst|cgst|sgst)\s+\d+(?:\.\d+)?\s*%/i.test(l)){const x=last(l.replace(/\d+(?:\.\d+)?\s*%/g,' '));if(!isNaN(x)){igstSum+=x;hasIgstBreakdown=true}}
     if(/pay\s*mode|paid\s*by|tender/i.test(l)){let x=last(l);if(!x&&A[k+1])x=last(A[k+1]);if(x)net.push(x)}
     const sv=l.match(/sav[a-z]{0,4}\W{0,8}(?:rs\.?)?\W{0,3}(\d[\d,]*(?:\.\d{2})?)/i);if(sv)saved=parseFloat(sv[1].replace(/,/g,''))
   });
@@ -1632,7 +1700,7 @@ function billParse(tx,sellerTx){
   const normTx=tx.replace(/\bto\s*tal\b/gi,'Total').replace(/(\d)\s+(?=\/-|\/(?:\s|$)|\+(?:\s|$))/g,'$1');
   const meta=extractStoreMeta(normTx,sellerTx);
   const L=normTx.replace(/[|_]/g,' ').split(/\n+/).map(s=>s.trim()).filter(Boolean);
-  let items=[],pend='',tq=0;
+  let items=[],pend='',tq=0,pendItem=null;
   const orphanNames=[],orphanAmts=[];
 
   for(let l of L){
@@ -1653,6 +1721,17 @@ function billParse(tx,sellerTx){
     const T=l.split(/\s+/);
     let wd=0;
     for(const tok of T){if(/[A-Za-z]{2,}/.test(tok)&&!/^(?:\/-|\/|\+|rs\.?|inr|kg|kgs|gm|gms|g|ltr|l|ml|nos|pcs|pc|btl|pkt|box|mts|unit)$/i.test(tok))wd++}
+    // thermal two-line item: "1 Name SIZE HSN" line followed by "qty mrp rate amount" line
+    const hsTm=l.match(/^\d{1,2}[.\)]?\s+(.+?)\s+(\d{6,8})$/);
+    if(hsTm&&!/\d+\.\d{2}/.test(l)&&/[A-Za-z]{2}/.test(hsTm[1])){pendItem={raw:hsTm[1].replace(/\s*(?:\/-|\/|₹)$/,'').trim(),hsn:hsTm[2]};pend='';continue}
+    if(pendItem){
+      const dec=l.match(/\d+\.\d{2}/g);
+      if(wd===0&&dec&&dec.length>=2){
+        const a2=parseAmtToken(T[T.length-1],true),q2=parseFloat(T[0]);
+        if(!isNaN(a2)&&a2>0){items.push({raw:pendItem.raw,hsn:pendItem.hsn,q:isNaN(q2)?null:q2,qtyLabel:isNaN(q2)?'':String(q2),amount:a2,alts:[a2]});pendItem=null;continue}
+      }
+      pendItem=null;
+    }
 
     const lastTok=T[T.length-1]||'';
     const hasRupeeMarker=/(?:\/-|\/|\+|-|[1lI|]-|[tf])$/.test(lastTok)||/^₹|^rs\.?/i.test(lastTok)||/^\d[\d,]*[.,]\d{2}$/.test(lastTok);
@@ -1711,7 +1790,7 @@ function billParse(tx,sellerTx){
     };
   });
 
-  const t2=normTx.match(/(\d{1,2})[\s\-\/.]([A-Za-z]{3})[a-z]*[\s\-\/.,]*(\d{4}|\d{2})\b/),t3=normTx.match(/\b(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4}|\d{2})\b/);let date='';
+  const t2=normTx.match(/(\d{1,2})\s*[-\/.]?\s*([A-Za-z]{3})[a-z]*\s*[-\/.]?\s*(\d{4}|\d{2})\b/),t3=normTx.match(/\b(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4}|\d{2})\b/);let date='';
   const mk=(d,m,y)=>(m>=1&&m<=12&&d>=1&&d<=31)?(String(y).length===2?'20'+y:y)+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0'):'';
   if(t2&&MON[t2[2].toLowerCase()])date=mk(+t2[1],MON[t2[2].toLowerCase()],t2[3]);else if(t3)date=mk(+t3[1],+t3[2],t3[3]);
   const pm=(normTx.match(/pay\s*mode\W*([^\n]*)/i)||normTx.match(/\b(upi|gpay|google ?pay|phonepe|paytm|card|cash)\b/i)||[])[1]||'',pay=/upi|gpay|google|phonepe|paytm/i.test(pm)?'UPI':/card|atm|at[mnh]\b|debit|credit/i.test(pm)?'Card':/cash/i.test(pm)?'Cash':'';
@@ -1805,14 +1884,14 @@ const idb=()=>new Promise((ok,no)=>{const r=indexedDB.open('km',1);r.onupgradene
 function edit(id){
   const x=S.tx.find(t=>t.id===id);if(!x)return;
   const o=document.createElement('div');o.id='ov';o.dataset.a='cl';o.dataset.t=x.t;o.className='modal-bg';o.style.cssText='align-items:flex-end;justify-content:center';
-  o.innerHTML=`<div class='card sheet-card' data-a='no'><div class='row' style='margin-bottom:8px'><b style='font-size:17px'>Edit entry</b><span class='sp'></span><button class='x' data-a='cl'>✕</button></div>${x.bill?`<small style='display:block;margin-bottom:8px'>Store and date change for every item on this bill</small>`:''}<div class='seg' style='margin-bottom:8px'><div class='seg-pill'></div><button data-a='et' data-v='ex' class='${x.t==='ex'?'on':''}'>Expense</button><button data-a='et' data-v='in' class='${x.t==='in'?'on':''}'>Income</button></div><div class='amt-wrap'><input id='ea' type='number' inputmode='decimal' value='${x.amt/100}'></div><input id='en' placeholder='Item' value='${esc(x.note)}'><div class='row'><input id='ebr' placeholder='Brand (optional)' value='${esc(x.br||'')}'><input id='eqt' placeholder='Qty (optional)' value='${esc(x.qt||'')}'></div><input id='ex' placeholder='Details' value='${esc(x.ds||'')}'><input id='em' placeholder='Store name' value='${esc(x.mer)}'><select id='ec'>${opts(x.cat,x.t)}</select><div class='row'><input id='ed' type='date' value='${x.d}'><select id='ep'>${['','Cash','UPI','Card','Bank'].map(p=>`<option ${p===x.pay?'selected':''}>${p}</option>`).join('')}</select></div><div class='row' style='margin-top:10px'><button data-a='edl' data-v='${x.id}' style='color:var(--ex)'>🗑 Delete</button><span class='sp'></span><button data-a='cl'>Cancel</button><button class='btn p' data-a='es' data-v='${x.id}'>Save Changes ✓</button></div></div>`;
+  o.innerHTML=`<div class='card sheet-card' data-a='no'><div class='row' style='margin-bottom:8px'><b style='font-size:17px'>Edit entry</b><span class='sp'></span><button class='x' data-a='cl'>✕</button></div>${x.bill?`<small style='display:block;margin-bottom:8px'>Store and date change for every item on this bill</small>`:''}<div class='seg' style='margin-bottom:8px'><div class='seg-pill'></div><button data-a='et' data-v='ex' class='${x.t==='ex'?'on':''}'>Expense</button><button data-a='et' data-v='in' class='${x.t==='in'?'on':''}'>Income</button></div><div class='amt-wrap'><input id='ea' type='number' inputmode='decimal' value='${x.amt/100}'></div><input id='en' placeholder='Item' value='${esc(x.note)}'><div class='row'><input id='eqt' placeholder='Qty (optional)' value='${esc(x.qt||'')}'></div><input id='ex' placeholder='Details' value='${esc(x.ds||'')}'><select id='ec'>${opts(x.cat,x.t)}</select><div class='row'><input id='ed' type='date' value='${x.d}'><select id='ep'>${['','Cash','UPI','Card','Bank'].map(p=>`<option ${p===x.pay?'selected':''}>${p}</option>`).join('')}</select></div><div class='row' style='margin-top:10px'><button data-a='edl' data-v='${x.id}' style='color:var(--ex)'>🗑 Delete</button><span class='sp'></span><button data-a='cl'>Cancel</button><button class='btn p' data-a='es' data-v='${x.id}'>Save Changes ✓</button></div></div>`;
   document.body.appendChild(o);syncPills();
 }
 function editSave(id){
   const x=S.tx.find(t=>t.id===id),o=$('#ov'),a=+$('#ea').value;if(!x)return;if(!(a>0))return toast('Enter an amount');
-  const m=$('#em').value.trim(),d=$('#ed').value||x.d;
-  if(x.bill)S.tx.filter(t=>t.bill===x.bill&&t.id!==id).forEach(t=>put({...t,mer:m,d}));
-  put({...x,t:o.dataset.t,amt:Math.round(a*100),note:$('#en').value.trim(),br:$('#ebr').value.trim(),qt:$('#eqt').value.trim(),it:itemKey($('#en').value),ds:$('#ex').value.trim(),mer:m,cat:$('#ec').value,d,pay:$('#ep').value});
+  const d=$('#ed').value||x.d;
+  if(x.bill)S.tx.filter(t=>t.bill===x.bill&&t.id!==id).forEach(t=>put({...t,d}));
+  put({...x,t:o.dataset.t,amt:Math.round(a*100),note:$('#en').value.trim(),qt:$('#eqt').value.trim(),it:itemKey($('#en').value),ds:$('#ex').value.trim(),cat:$('#ec').value,d,pay:$('#ep').value});
   o.remove();S.m=d.slice(0,7);render();toast('Updated ✓');
 }
 const busy=(m,pct=0)=>{busyMsg=m;busyPct=pct;rv()};
@@ -1948,6 +2027,14 @@ function tightInkCropAndThicken(c){
     }
   }
   if(inkCnt<30||x1<=x0||y1<=y0)return c;
+  if((x1-x0+1)>=w*.94&&(y1-y0+1)>=h*.94){
+    /* Clear, well-framed page — keep the full sheet, only thicken the ink */
+    const src=new Uint8Array(w*h);
+    for(let i=0,j=0;j<src.length;i+=4,j++)src[j]=d[i];
+    for(let y=1;y<h-1;y++){const r=y*w;for(let xx=1;xx<w-1;xx++){const j=r+xx,v0=src[j];if(v0>225)continue;const mn=Math.min(src[j-1],src[j+1],src[j-w],src[j+w]);const v=Math.min(v0,Math.round(v0*0.45+mn*0.55));const idx=j*4;d[idx]=d[idx+1]=d[idx+2]=v}}
+    ctx.putImageData(img,0,0);
+    return c;
+  }
   const pad=24,cw=Math.min(w,x1-x0+1),ch=Math.min(h,y1-y0+1);
   const out=document.createElement('canvas');
   out.width=cw+pad*2;out.height=ch+pad*2;
@@ -2015,8 +2102,13 @@ async function prep(f){
   const sx=sc.getContext('2d',{willReadFrequently:true});sx.drawImage(oriented,0,0,sw,sh);
   const d=sx.getImageData(0,0,sw,sh).data,g=new Uint8Array(sw*sh);
   for(let i=0;i<g.length;i++)g[i]=(d[i*4]*299+d[i*4+1]*587+d[i+2]*114)/1000;
-  const b=paperBox(g,sw,sh);let x=0,y=0,w=OW,h=OH;
-  if(b){const mx=OW*.015,my=OH*.015;x=Math.max(0,Math.floor(b[0]/k-mx));y=Math.max(0,Math.floor(b[1]/k-my));w=Math.min(OW-x,Math.ceil((b[2]-b[0])/k+2*mx));h=Math.min(OH-y,Math.ceil((b[3]-b[1])/k+2*my))}
+  const b=paperBox(g,sw,sh);let x=0,y=0,w=OW,h=OH,cropped=false;
+  if(b){
+    const bw=b[2]-b[0],bh=b[3]-b[1],cover=(bw*bh)/(sw*sh);
+    const wellFramed=cover>=0.90||(bw>=sw*.97&&bh>=sh*.97);
+    if(!wellFramed){const mx=OW*.015,my=OH*.015;x=Math.max(0,Math.floor(b[0]/k-mx));y=Math.max(0,Math.floor(b[1]/k-my));w=Math.min(OW-x,Math.ceil((b[2]-b[0])/k+2*mx));h=Math.min(OH-y,Math.ceil((b[3]-b[1])/k+2*my));cropped=true}
+  }
+  try{window.__kmPrep={srcW:OW,srcH:OH,box:b?b.map(Math.round):null,cropped}}catch(e){}
   const s=Math.min(3200/Math.max(w,h),Math.max(.35,Math.min(1.6,1350/w))),pad=18,c=document.createElement('canvas');
   c.width=Math.round(w*s)+pad*2;c.height=Math.round(h*s)+pad*2;
   const cx=c.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,c.width,c.height);cx.drawImage(oriented,x,y,w,h,pad,pad,Math.round(w*s),Math.round(h*s));
@@ -2153,12 +2245,12 @@ function runCountUps(){
   });
 }
 function syncNavLabels(){
-  ['home','add','items','hist'].forEach(k=>{const el=$('#nav-'+k);if(el)el.textContent=t('nav.'+k)});
+  ['home','add','items','hist','stores'].forEach(k=>{const el=$('#nav-'+k);if(el)el.textContent=t('nav.'+k)});
 }
 function render(){
   syncNavLabels();
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===S.tab));
-  $('#app').innerHTML=head()+({home,add,items:itemsView,hist}[S.tab])();
+  $('#app').innerHTML=head()+({home,add,items:itemsView,hist,stores:storesView}[S.tab])();
   if(S.tab==='add'){rv();ph()}
   requestAnimationFrame(()=>{syncPills();runCountUps()});
 }
@@ -2211,8 +2303,10 @@ else if(a==='ty'){S.ty=v;S.pick=0;render()}
 else if(a==='rm'){ask('Delete this entry?',()=>{rm(v);render()})}else if(a==='ed')edit(v);else if(a==='et'){const o=$('#ov');o.dataset.t=v;o.querySelectorAll('[data-a=et]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));syncPills();$('#ec').innerHTML=opts(guess($('#en').value,v),v)}else if(a==='es')editSave(v);else if(a==='edl'){ask('Delete this entry?',()=>{rm(v);$('#ov').remove();render()})}else if(a==='no'){}else if(a==='pc'){S.cd=v;render()}else if(a==='cb'){S.cd='';render()}else if(a==='pv'){S.pv=v;render()}else if(a==='it'){if(v!=='__o'){S.tab='items';S.iq=v;S.iqs='';render()}}else if(a==='ir'){S.ir=v;render()}else if(a==='iq'){S.iq=v;S.iqs='';render()}else if(a==='ic'){S.iq='';S.iqs='';render()}else if(a==='hq'){S.q=v;const qi=$('#q');if(qi)qi.value=v;$('#hl').innerHTML=hl()}else if(a==='ntpick'){const ni=$('#nt');if(ni){ni.value=v;if(!S.pick)$('#ct').value=catGuess(v,S.ty);const tr=$('#nt-tray');if(tr)tr.innerHTML=''}}else if(a==='clr'){R=null;busyMsg='';busyPct=0;S.img=null;S.bid=null;S.pick=0;render();toast('Cleared')}else if(a==='wipe'){const n=S.tx.length;if(!n)toast('Nothing to delete');else ask('Delete ALL '+n+' saved entries and their bill photos? This cannot be undone. Tip: use 💾 Backup in History first.',()=>{S.tx=[];cache();try{idb().then(d=>{d.transaction('i','readwrite').objectStore('i').clear()}).catch(()=>{})}catch(e){}IKM.clear();S.cd='';S.iq='';render();toast('All entries deleted')})}
 else if(a==='sv')save();
 else if(a==='rd')read($('#sm').value.trim());
-else if(a==='mic')mic();else if(a==='bk'){DL?DL.save({filename:'kharchamitra-backup.json',data:JSON.stringify(S.tx)}).catch(()=>{}):toast('Backup not available here')}else if(a==='px'){S.img=null;S.bid=null;ph()}else if(a==='vi')viewBill(v);else if(a==='cl')$('#ov').remove()
+else if(a==='mic')mic();else if(a==='bk'){DL?DL.save({filename:'kharchamitra-backup.json',data:JSON.stringify({v:2,tx:S.tx,stores:S.stores})}).catch(()=>{}):toast('Backup not available here')}else if(a==='px'){S.img=null;S.bid=null;ph()}else if(a==='vi')viewBill(v);else if(a==='cl')$('#ov').remove()
 else if(a==='rx'){R.items.splice(+v,1);(R.items.length||(+R.total||0)>0)?rv():(R=null,rv())}
+else if(a==='txp'){S.taxP=v;render()}
+else if(a==='sdel'){ask(t('stores.delete'),()=>{S.stores=S.stores.filter(s=>s.id!==v);cacheStores();render();toast('Store deleted')})}
 else if(a==='rs')saveR();else if(a==='rc'){R=null;rv()}else if(a==='ex')exportCsv()});
 
 document.addEventListener('input',e=>{
@@ -2230,10 +2324,14 @@ document.addEventListener('input',e=>{
     S.iqs=t.value;S.iq='';$('#ires').innerHTML=itemRes();
   }else if(t.id==='q'){
     S.q=t.value;$('#hl').innerHTML=hl();
+  }else if(t.id==='tf'){
+    S.tf=t.value;render();
+  }else if(t.id==='tt'){
+    S.tt=t.value;render();
   }
 });
 
-document.addEventListener('change',e=>{if(e.target.id==='ct')S.pick=1;const f=e.target.files&&e.target.files[0];if(f&&e.target.id==='rs'){f.text().then(s=>{try{const a=JSON.parse(s);a.forEach(x=>x&&x.id&&put(x));render();toast('Restored '+a.length)}catch(_){toast('Not a valid backup')}});e.target.value=''}else if(f&&e.target.type==='file'){ocr(f);e.target.value=''}});
+document.addEventListener('change',e=>{if(e.target.id==='ct')S.pick=1;const f=e.target.files&&e.target.files[0];if(f&&e.target.id==='rs'){f.text().then(s=>{try{const a=JSON.parse(s),arr=Array.isArray(a)?a:(a.tx||[]);if(!Array.isArray(a)&&Array.isArray(a.stores)){S.stores=a.stores;cacheStores()}arr.forEach(x=>x&&x.id&&put(x));render();toast('Restored '+arr.length)}catch(_){toast('Not a valid backup')}});e.target.value=''}else if(f&&e.target.type==='file'){ocr(f);e.target.value=''}});
 render();
 (async()=>{try{DL=await claude.use('downloads')}catch(e){}return;try{const u=await claude.use('user'),db=await claude.use('db');if(u&&db){const id=await u.id();coll=db.collection('data/users/'+id);let first=1;coll.onSnapshot(s=>{const docs=s.docs.map(d=>d.data());if(first){first=0;const ids=new Set(docs.map(d=>d.id));S.tx.filter(x=>!ids.has(x.id)).forEach(x=>{docs.push(x);coll.doc(x.id).set(x).catch(()=>{})})}S.tx=docs;cache();if(S.tab!=='add')render()},()=>{})}}catch(e){}
 try{SM=await claude.use('sample')}catch(e){}
